@@ -21,11 +21,13 @@ export default async function handler(
         case 'png':
         case 'webp':
         case 'jpeg':
-            let data = await sharp(Buffer.from(result)).resize(width, height).png().toBuffer();
-            res.status(200).setHeader('Content-Type', `image/${t}`).send(data);
+            let data = await sharp(Buffer.from(result), {
+                sequentialRead: true,
+            }).png().toBuffer();
+            res.status(200).setHeader('Content-Type', `image/${t}`).setHeader('seed', seed).send(data);
             break;
         default:
-            res.status(200).setHeader('Content-Type', 'image/svg+xml').send(result);
+            res.status(200).setHeader('Content-Type', 'image/svg+xml').setHeader('seed', seed).send(result);
             break;
     }
 }
